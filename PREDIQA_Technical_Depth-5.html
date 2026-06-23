@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PREDIQA — Technical Depth & Architecture · HIP Addendum</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0b1422; --ink2:#2a3344; --ink3:#5e6678; --ink4:#8b92a3;
+  --paper:#f7f8fc; --paper2:#eef1f7; --line:#dce0ea; --line2:#e8ebf2;
+  --white:#ffffff;
+  --cofler:#0f6e56; --cofler-l:#e1f5ee;
+  --flip:#1a56db;   --flip-l:#e8effd;
+  --empath:#7c3aed; --empath-l:#f1ecfe;
+  --fraud:#c0392b;  --fraud-l:#fbeae8;
+  --gold:#b7860a;   --gold-l:#fcf3dd;
+  --navy:#0b1422; --navy2:#101d31; --navy3:#16263f;
+  --teal:#3dd7a8; --teal-soft:#7bdcc0;
+  --maxw:1180px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'IBM Plex Sans',system-ui,sans-serif;
+  background:var(--paper); color:var(--ink);
+  line-height:1.6; -webkit-font-smoothing:antialiased; overflow-x:hidden;
+}
+.mono{font-family:'IBM Plex Mono',monospace}
+.serif{font-family:'Fraunces',serif}
+
+/* NAV */
+.topnav{
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  background:rgba(11,20,34,.86); backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(255,255,255,.08);
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 clamp(16px,4vw,40px); height:58px;
+}
+.nav-brand{display:flex;align-items:center;gap:11px;color:#fff;text-decoration:none}
+.nav-mark{
+  width:30px;height:30px;border-radius:7px;display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--cofler),var(--flip));
+  font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:13px;color:#fff;
+  box-shadow:0 2px 10px rgba(26,86,219,.4);
+}
+.nav-brand b{font-weight:600;letter-spacing:.06em;font-size:15px}
+.nav-brand .sub{font-size:10px;color:#8b92a3;font-family:'IBM Plex Mono',monospace;letter-spacing:.14em;text-transform:uppercase}
+.nav-links{display:flex;gap:4px}
+.nav-links a{
+  color:#aeb6c6;text-decoration:none;font-size:12.5px;font-weight:500;
+  padding:7px 12px;border-radius:7px;transition:.18s;letter-spacing:.01em;
+}
+.nav-links a:hover{color:#fff;background:rgba(255,255,255,.08)}
+@media(max-width:980px){.nav-links{display:none}}
+
+/* HERO */
+.hero{
+  background:
+    radial-gradient(1100px 520px at 78% -8%, rgba(124,58,237,.20), transparent 60%),
+    radial-gradient(900px 480px at 10% 12%, rgba(15,110,86,.22), transparent 58%),
+    radial-gradient(700px 600px at 50% 110%, rgba(26,86,219,.16), transparent 60%),
+    var(--navy);
+  color:#fff; padding:128px clamp(16px,4vw,40px) 72px; position:relative; overflow:hidden;
+}
+.hero-grid-bg{
+  position:absolute;inset:0;opacity:.5;
+  background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+  background-size:46px 46px; mask-image:radial-gradient(ellipse 80% 70% at 50% 30%,#000,transparent);
+}
+.hero-inner{max-width:var(--maxw);margin:0 auto;position:relative}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:9px;
+  font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.22em;
+  text-transform:uppercase;color:#9aa3b5;
+  border:1px solid rgba(255,255,255,.16);border-radius:100px;
+  padding:6px 15px;margin-bottom:30px;
+}
+.eyebrow .pulse{width:7px;height:7px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 0 rgba(61,215,168,.6);animation:pulse 2.4s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(61,215,168,.55)}70%{box-shadow:0 0 0 9px rgba(61,215,168,0)}100%{box-shadow:0 0 0 0 rgba(61,215,168,0)}}
+.hero h1{
+  font-family:'Fraunces',serif;font-weight:500;
+  font-size:clamp(32px,5.4vw,60px);line-height:1.05;letter-spacing:-.018em;
+  margin-bottom:22px;max-width:20ch;
+}
+.hero h1 em{font-style:italic;color:var(--teal-soft)}
+.hero-sub{font-size:clamp(15px,2vw,18.5px);color:#c2c9d6;max-width:64ch;font-weight:300;line-height:1.62;margin-bottom:14px}
+.hero-sub b{color:#fff;font-weight:600}
+.hero-stats{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  margin-top:44px;background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.1);border-radius:14px;overflow:hidden;
+}
+.hstat{background:var(--navy2);padding:22px 20px}
+.hstat .v{font-family:'Fraunces',serif;font-size:clamp(23px,3.2vw,32px);font-weight:500;line-height:1;color:#fff}
+.hstat .v small{font-size:.5em;color:var(--teal-soft);font-family:'IBM Plex Mono',monospace}
+.hstat .l{font-size:11.5px;color:#9aa3b5;margin-top:9px;line-height:1.4}
+@media(max-width:760px){.hero-stats{grid-template-columns:repeat(2,1fr)}}
+
+/* gap-closer chips under hero */
+.gap-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:34px}
+.gap-chip{
+  display:inline-flex;align-items:center;gap:9px;font-family:'IBM Plex Mono',monospace;
+  font-size:11.5px;font-weight:500;color:#dfe4ec;padding:9px 14px;border-radius:9px;
+  border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);
+}
+.gap-chip .num{color:var(--teal);font-weight:600}
+
+/* SECTION */
+section{padding:clamp(54px,7vw,92px) clamp(16px,4vw,40px);scroll-margin-top:72px}
+.wrap{max-width:var(--maxw);margin:0 auto}
+.sec-eyebrow{
+  font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--ink4);margin-bottom:16px;display:flex;align-items:center;gap:12px;
+}
+.sec-eyebrow::before{content:"";width:28px;height:1px;background:var(--ink3)}
+.sec-title{
+  font-family:'Fraunces',serif;font-weight:500;
+  font-size:clamp(25px,3.7vw,40px);line-height:1.1;letter-spacing:-.015em;margin-bottom:18px;max-width:24ch;
+}
+.sec-title em{font-style:italic;color:var(--cofler)}
+.sec-lead{font-size:clamp(15px,1.6vw,17px);color:var(--ink2);max-width:66ch;font-weight:300;line-height:1.66}
+.sec-lead b{font-weight:600;color:var(--ink)}
+
+.band-dark{background:var(--navy);color:#fff}
+.band-dark .sec-eyebrow{color:var(--teal-soft)}
+.band-dark .sec-eyebrow::before{background:#3a4a63}
+.band-dark .sec-lead{color:#c2c9d6}
+.band-dark .sec-lead b{color:#fff}
+.band-dark .sec-title em{color:var(--teal-soft)}
+
+/* ARCHITECTURE pipeline */
+.pipe{margin-top:50px;display:grid;gap:12px}
+.pipe-stage{
+  display:grid;grid-template-columns:54px 1fr;gap:18px;align-items:stretch;
+  background:var(--navy2);border:1px solid rgba(255,255,255,.09);border-radius:14px;
+  padding:20px 22px;position:relative;overflow:hidden;
+}
+.pipe-stage::before{content:"";position:absolute;top:0;left:0;width:3px;height:100%;background:var(--c,var(--teal))}
+.pipe-num{
+  font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:var(--c,var(--teal));
+  border:1px solid rgba(255,255,255,.14);border-radius:9px;display:grid;place-items:center;height:44px;
+}
+.pipe-body h4{font-size:15.5px;font-weight:600;color:#fff;margin-bottom:5px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.pipe-body .tag{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:5px;font-weight:600}
+.tag-sys{background:rgba(61,215,168,.16);color:var(--teal-soft)}
+.tag-gate{background:rgba(183,134,10,.2);color:#e9c45f}
+.pipe-body p{font-size:13px;color:#a9b0c0;line-height:1.55}
+.pipe-body p code{font-family:'IBM Plex Mono',monospace;font-size:11.5px;background:rgba(255,255,255,.07);color:#cfe7df;padding:1px 6px;border-radius:4px}
+
+/* deploy / security strip */
+.strip{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:44px}
+.strip-card{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:24px 22px;box-shadow:0 1px 2px rgba(16,24,40,.04),0 12px 36px -14px rgba(16,24,40,.1)}
+.strip-card .sc-eye{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink4);margin-bottom:12px}
+.strip-card h4{font-size:15px;font-weight:600;margin-bottom:12px;color:var(--ink)}
+.strip-card ul{list-style:none;display:grid;gap:8px}
+.strip-card li{font-size:13px;color:var(--ink2);padding-left:18px;position:relative;line-height:1.5}
+.strip-card li::before{content:"";position:absolute;left:0;top:8px;width:7px;height:7px;border-radius:2px;background:var(--cofler)}
+.strip-card li b{font-weight:600;color:var(--ink)}
+.pill{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;padding:2px 7px;border-radius:5px;margin-left:6px}
+.pill-live{background:var(--cofler-l);color:var(--cofler)}
+.pill-prog{background:var(--gold-l);color:var(--gold)}
+@media(max-width:820px){.strip{grid-template-columns:1fr}}
+
+/* AI METHODOLOGY table */
+.tbl-wrap{margin-top:46px;border:1px solid rgba(255,255,255,.1);border-radius:14px;overflow:hidden;background:var(--navy2)}
+table.dt{width:100%;border-collapse:collapse;font-size:13px}
+table.dt th{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--teal-soft);text-align:left;padding:14px 18px;background:rgba(255,255,255,.04);
+  border-bottom:1px solid rgba(255,255,255,.1);font-weight:600;
+}
+table.dt td{padding:15px 18px;border-bottom:1px solid rgba(255,255,255,.06);color:#c2c9d6;vertical-align:top;line-height:1.55}
+table.dt tr:last-child td{border-bottom:none}
+table.dt td:first-child{color:#fff;font-weight:600;white-space:nowrap}
+table.dt code{font-family:'IBM Plex Mono',monospace;font-size:11px;background:rgba(255,255,255,.07);color:#cfe7df;padding:1px 6px;border-radius:4px}
+table.dt .model{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--teal-soft)}
+@media(max-width:760px){table.dt{font-size:11.5px}table.dt th,table.dt td{padding:10px 11px}}
+
+/* signal/code block */
+.codecard{
+  margin-top:34px;background:#0a121f;border:1px solid rgba(255,255,255,.1);border-radius:14px;
+  overflow:hidden;
+}
+.codecard .ch{
+  display:flex;align-items:center;gap:8px;padding:12px 18px;border-bottom:1px solid rgba(255,255,255,.08);
+  font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;color:#8b92a3;text-transform:uppercase;
+}
+.codecard .ch .dot{width:9px;height:9px;border-radius:50%}
+.codecard pre{padding:20px 22px;overflow-x:auto;font-family:'IBM Plex Mono',monospace;font-size:12px;line-height:1.7;color:#cfd5e0}
+.codecard pre .k{color:var(--teal-soft)}
+.codecard pre .c{color:#6f7689}
+.codecard pre .s{color:#e9c45f}
+
+/* explainability cards */
+.xai{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:34px}
+.xai-card{background:var(--navy2);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:22px 20px}
+.xai-card .xi{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;color:var(--teal-soft);text-transform:uppercase;margin-bottom:10px}
+.xai-card h4{font-size:15px;font-weight:600;color:#fff;margin-bottom:8px}
+.xai-card p{font-size:13px;color:#a9b0c0;line-height:1.55}
+@media(max-width:820px){.xai{grid-template-columns:1fr}}
+
+/* VALIDATION - dual column metrics */
+.val-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:46px}
+.val-card{border-radius:16px;padding:28px 26px;border:1px solid var(--line)}
+.val-card.modeled{background:linear-gradient(160deg,#fbfcfe,#f2f5fb);}
+.val-card.actual{background:linear-gradient(160deg,var(--navy),var(--navy3));color:#fff;border-color:rgba(255,255,255,.12)}
+.val-card .vh{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.val-card .vt{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:600}
+.val-card.modeled .vt{color:var(--gold)}
+.val-card.actual .vt{color:var(--teal-soft)}
+.val-card .vbadge{font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:600;padding:3px 9px;border-radius:100px}
+.val-card.modeled .vbadge{background:var(--gold-l);color:var(--gold)}
+.val-card.actual .vbadge{background:rgba(61,215,168,.16);color:var(--teal-soft)}
+.val-card h3{font-family:'Fraunces',serif;font-weight:500;font-size:22px;margin:6px 0 16px;letter-spacing:-.01em}
+.val-card.actual h3{color:#fff}
+.metric{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:12px 0;border-bottom:1px solid var(--line2)}
+.val-card.actual .metric{border-bottom-color:rgba(255,255,255,.09)}
+.metric:last-of-type{border-bottom:none}
+.metric .ml{font-size:13px;line-height:1.4;flex:1}
+.val-card.modeled .ml{color:var(--ink2)}
+.val-card.actual .ml{color:#c2c9d6}
+.metric .mv{font-family:'Fraunces',serif;font-size:21px;font-weight:500;white-space:nowrap}
+.val-card.modeled .mv{color:var(--cofler)}
+.val-card.actual .mv{color:var(--teal-soft)}
+.val-note{margin-top:18px;font-size:11.5px;line-height:1.5;font-style:italic}
+.val-card.modeled .val-note{color:var(--ink3)}
+.val-card.actual .val-note{color:#9aa3b5}
+@media(max-width:820px){.val-grid{grid-template-columns:1fr}}
+
+.disclaimer{
+  margin-top:30px;background:var(--gold-l);border:1px solid #ecd9a3;border-radius:12px;
+  padding:18px 22px;font-size:13px;color:#7a5a08;line-height:1.6;
+}
+.disclaimer b{color:#5e4406}
+
+/* MOAT / correlation engine deep dive */
+.moat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:46px}
+.moat-card{background:var(--navy2);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:24px 22px;position:relative;overflow:hidden}
+.moat-card::before{content:"";position:absolute;top:0;left:0;width:100%;height:3px;background:var(--c,var(--teal))}
+.moat-card .mn{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;color:var(--c,var(--teal-soft));text-transform:uppercase;margin-bottom:12px;font-weight:600}
+.moat-card h4{font-size:15.5px;font-weight:600;color:#fff;margin-bottom:9px}
+.moat-card p{font-size:13px;color:#a9b0c0;line-height:1.58}
+@media(max-width:820px){.moat-grid{grid-template-columns:1fr}}
+
+.example-box{
+  margin-top:34px;background:#0a121f;border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:26px 24px;
+}
+.example-box .eb-eye{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;color:var(--teal-soft);text-transform:uppercase;margin-bottom:16px}
+.eb-flow{display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-family:'IBM Plex Mono',monospace;font-size:12.5px}
+.eb-node{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:9px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:#dfe4ec;font-weight:500}
+.eb-node .d{width:8px;height:8px;border-radius:2px}
+.eb-arrow{color:#5e6678;font-size:15px}
+.eb-result{margin-top:18px;font-size:14px;color:#cfd5e0;line-height:1.6}
+.eb-result b{color:#fff}
+.eb-result .crit{color:#f5776b;font-weight:600;font-family:'IBM Plex Mono',monospace}
+
+/* gates summary table */
+.gates-wrap{margin-top:42px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--white);box-shadow:0 12px 36px -16px rgba(16,24,40,.12)}
+table.gt{width:100%;border-collapse:collapse;font-size:13px}
+table.gt th{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink4);text-align:left;padding:13px 16px;background:var(--paper2);border-bottom:1px solid var(--line);font-weight:600}
+table.gt td{padding:13px 16px;border-bottom:1px solid var(--line2);color:var(--ink2);vertical-align:top;line-height:1.5}
+table.gt tr:last-child td{border-bottom:none}
+table.gt td:first-child{font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--cofler);white-space:nowrap}
+table.gt td:nth-child(2){font-weight:600;color:var(--ink);white-space:nowrap}
+@media(max-width:760px){table.gt td:nth-child(2),table.gt td:first-child{white-space:normal}table.gt{font-size:11.5px}table.gt th,table.gt td{padding:9px 10px}}
+
+/* scalability stats */
+.scale-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;margin-top:42px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:14px;overflow:hidden}
+.scale-cell{background:var(--navy2);padding:24px 20px}
+.scale-cell .v{font-family:'Fraunces',serif;font-size:clamp(24px,3.2vw,32px);font-weight:500;color:#fff;line-height:1}
+.scale-cell .v small{font-size:.45em;color:var(--teal-soft);font-family:'IBM Plex Mono',monospace}
+.scale-cell .l{font-size:11.5px;color:#9aa3b5;margin-top:9px;line-height:1.45}
+@media(max-width:760px){.scale-row{grid-template-columns:repeat(2,1fr)}}
+
+/* footer */
+.foot{background:var(--navy2);color:#8b92a3;padding:30px clamp(16px,4vw,40px);font-size:12px;border-top:1px solid rgba(255,255,255,.07)}
+.foot-in{max-width:var(--maxw);margin:0 auto;display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;align-items:center}
+.foot b{color:#cfd5e0;font-weight:600}
+.foot .mono{color:#6f7689}
+
+/* ===== DILIGENCE COMPONENTS ===== */
+/* fill placeholder for data-room values */
+.fill{font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:600;color:var(--gold);background:var(--gold-l);border:1px dashed #d9b85a;border-radius:5px;padding:1px 7px;white-space:nowrap}
+.band-dark .fill{color:#e9c45f;background:rgba(183,134,10,.16);border-color:rgba(183,134,10,.45)}
+
+/* reconciliation waterfall */
+.recon{margin-top:40px;background:#0a121f;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:clamp(22px,3vw,30px)}
+.recon-eye{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--teal-soft);text-transform:uppercase;margin-bottom:22px}
+.recon-flow{display:flex;align-items:stretch;gap:12px;flex-wrap:wrap}
+.rstep{flex:1;min-width:150px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:11px;padding:18px 18px}
+.rstep .rl{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#9aa3b5;margin-bottom:9px;line-height:1.35}
+.rstep .rv{font-family:'Fraunces',serif;font-size:30px;font-weight:500;color:#fff;line-height:1}
+.rstep .rv.green{color:var(--teal-soft)}
+.rstep .rd{font-size:11.5px;color:#a9b0c0;margin-top:9px;line-height:1.45}
+.rop{display:flex;align-items:center;color:#5e6678;font-size:22px;font-family:'IBM Plex Mono',monospace}
+.recon-take{margin-top:22px;font-size:14.5px;color:#cfd5e0;line-height:1.6;border-top:1px solid rgba(255,255,255,.1);padding-top:20px}
+.recon-take b{color:#fff}
+.recon-take .hl{color:var(--teal-soft);font-weight:600}
+@media(max-width:820px){.rop{transform:rotate(90deg);justify-content:center;width:100%}.rstep{min-width:100%}}
+
+/* duo cards */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:34px}
+.duo-card{border-radius:14px;padding:24px 22px;border:1px solid var(--line)}
+.band-dark .duo-card{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.1)}
+.duo-card .de{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink4);margin-bottom:11px}
+.band-dark .duo-card .de{color:var(--teal-soft)}
+.duo-card h4{font-size:15.5px;font-weight:600;color:var(--ink);margin-bottom:9px}
+.band-dark .duo-card h4{color:#fff}
+.duo-card p{font-size:13.5px;color:var(--ink2);line-height:1.55}
+.band-dark .duo-card p{color:#a9b0c0}
+.duo-card p code{font-family:'IBM Plex Mono',monospace;font-size:12px;background:rgba(255,255,255,.07);color:#cfe7df;padding:1px 6px;border-radius:4px}
+@media(max-width:820px){.duo{grid-template-columns:1fr}}
+
+/* callouts (teal/gold) */
+.callout{margin-top:30px;border-radius:13px;padding:18px 22px;font-size:14px;line-height:1.6}
+.callout.gold{background:var(--gold-l);border:1px solid #ecd9a3;color:#7a5a08}
+.callout.gold b{color:#5e4406}
+.callout.teal{background:var(--cofler-l);border:1px solid #b9e3d4;color:#0c5743}
+.callout.teal b{color:#0a3d2f}
+.band-dark .callout.teal{background:rgba(15,110,86,.16);border-color:rgba(61,215,168,.35);color:#bfe9dc}
+.band-dark .callout.teal b{color:#fff}
+
+/* data tables (dark + light) */
+.dtbl{margin-top:34px;border:1px solid rgba(255,255,255,.1);border-radius:14px;overflow:hidden;background:var(--navy2)}
+.dtbl.light{border-color:var(--line);background:var(--white);box-shadow:0 12px 36px -16px rgba(16,24,40,.12)}
+table.ddt{width:100%;border-collapse:collapse;font-size:13px}
+table.ddt th{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--teal-soft);text-align:left;padding:13px 16px;background:rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.1);font-weight:600}
+.dtbl.light table.ddt th{color:var(--ink4);background:var(--paper2);border-bottom-color:var(--line)}
+table.ddt td{padding:13px 16px;border-bottom:1px solid rgba(255,255,255,.06);color:#c2c9d6;vertical-align:top;line-height:1.45}
+.dtbl.light table.ddt td{border-bottom-color:var(--line2);color:var(--ink2)}
+table.ddt tr:last-child td{border-bottom:none}
+table.ddt td:first-child{color:#fff;font-weight:600;white-space:nowrap}
+.dtbl.light table.ddt td:first-child{color:var(--ink)}
+table.ddt .mn{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--teal-soft)}
+.dtbl.light table.ddt .mn{color:var(--cofler)}
+@media(max-width:760px){table.ddt{font-size:11.5px}table.ddt th,table.ddt td{padding:9px 10px;white-space:normal}}
+
+/* numbered steps (knowledge graph) */
+.ksteps{margin-top:34px;display:flex;flex-direction:column;gap:12px}
+.kstep{display:grid;grid-template-columns:42px 1fr;gap:16px;background:var(--navy2);border:1px solid rgba(255,255,255,.09);border-radius:13px;padding:18px 20px;position:relative;overflow:hidden}
+.kstep::before{content:"";position:absolute;top:0;left:0;width:3px;height:100%;background:var(--c,var(--teal))}
+.kstep .kn{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:var(--c,var(--teal));border:1px solid rgba(255,255,255,.14);border-radius:8px;display:grid;place-items:center;height:34px}
+.kstep h4{font-size:15px;font-weight:600;color:#fff;margin-bottom:5px}
+.kstep p{font-size:13px;color:#a9b0c0;line-height:1.55}
+.kstep p code{font-family:'IBM Plex Mono',monospace;font-size:11.5px;background:rgba(255,255,255,.07);color:#cfe7df;padding:1px 6px;border-radius:4px}
+
+/* vs moat comparison */
+.vsgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:34px}
+.vscard{border-radius:14px;padding:24px 22px}
+.vscard.them{background:var(--navy2);border:1px solid rgba(255,255,255,.09)}
+.vscard.us{background:linear-gradient(160deg,#0f6e56,#0b5240);border:1px solid rgba(61,215,168,.3)}
+.vscard .vsh{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;margin-bottom:15px;font-weight:600}
+.vscard.them .vsh{color:#9aa3b5}
+.vscard.us .vsh{color:#bff0e2}
+.vscard ul{list-style:none;display:flex;flex-direction:column;gap:11px}
+.vscard li{font-size:13.5px;line-height:1.5;padding-left:22px;position:relative}
+.vscard.them li{color:#c2c9d6}
+.vscard.us li{color:#eafaf5}
+.vscard.them li::before{content:"–";position:absolute;left:4px;color:#5e6678;font-weight:600}
+.vscard.us li::before{content:"✓";position:absolute;left:0;color:#bff0e2;font-size:12px;top:3px}
+.vscard li b{font-weight:600}
+.vscard.us li b{color:#fff}
+@media(max-width:820px){.vsgrid{grid-template-columns:1fr}}
+
+/* ===== PRODUCT ARCHITECTURE ===== */
+.arch-hub{margin-top:46px;display:grid;grid-template-columns:1fr;gap:22px}
+/* six lever ring */
+.levers{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.lever{background:var(--navy2);border:1px solid rgba(255,255,255,.1);border-radius:13px;padding:18px 18px;position:relative;overflow:hidden}
+.lever::before{content:"";position:absolute;top:0;left:0;width:100%;height:3px;background:var(--c,var(--teal))}
+.lever .lk{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:600;color:var(--c,var(--teal));line-height:1;margin-bottom:9px}
+.lever h4{font-size:13.5px;font-weight:600;color:#fff;margin-bottom:6px}
+.lever h4 .pin{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:8.5px;font-weight:600;padding:2px 6px;border-radius:5px;margin-left:6px;vertical-align:middle;background:rgba(255,255,255,.08);color:#bff0e2}
+.lever p{font-size:11.5px;color:#9aa3b5;line-height:1.5}
+@media(max-width:820px){.levers{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.levers{grid-template-columns:1fr}}
+
+.cofler-band{margin-top:22px;background:linear-gradient(135deg,var(--cofler),#0b5240);border:1px solid rgba(61,215,168,.3);border-radius:14px;padding:22px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.cofler-band .cl{max-width:60ch}
+.cofler-band .ce{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:#bff0e2;margin-bottom:7px;font-weight:600}
+.cofler-band h3{font-family:'Fraunces',serif;font-size:21px;font-weight:500;color:#fff;margin-bottom:6px;letter-spacing:-.01em}
+.cofler-band p{font-size:13px;color:#eafaf5;line-height:1.55}
+.cofler-band .cscore{text-align:center;flex-shrink:0}
+.cofler-band .cscore .v{font-family:'Fraunces',serif;font-size:46px;font-weight:500;color:#fff;line-height:1}
+.cofler-band .cscore .l{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:#bff0e2;margin-top:5px}
+
+/* product cards */
+.prods{margin-top:22px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.prod{border-radius:14px;padding:22px 20px;border:1px solid var(--line);background:var(--white);position:relative;overflow:hidden;display:flex;flex-direction:column}
+.prod::before{content:"";position:absolute;top:0;left:0;width:100%;height:4px;background:var(--c)}
+.prod .ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.prod .pname{font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:600;letter-spacing:.02em;color:var(--c)}
+.prod .pside{font-family:'IBM Plex Mono',monospace;font-size:8.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:5px;background:var(--cl);color:var(--c)}
+.prod .ptag{font-size:13px;font-weight:600;color:var(--ink);margin:8px 0 9px;line-height:1.35}
+.prod p{font-size:12.5px;color:var(--ink2);line-height:1.5;margin-bottom:12px}
+.prod .pstages{margin-top:auto;display:flex;flex-wrap:wrap;gap:5px}
+.prod .pstage{font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:500;padding:3px 7px;border-radius:5px;background:var(--paper2);color:var(--ink3);border:1px solid var(--line)}
+@media(max-width:900px){.prods{grid-template-columns:1fr}}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+.reveal.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a class="nav-brand" href="#top">
+    <span class="nav-mark">PQ</span>
+    <span><b>PREDIQA</b><br><span class="sub">Technical Depth · HIP</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="#architecture-overview">Products</a>
+    <a href="#arch">Architecture</a>
+    <a href="#ai">AI Methodology</a>
+    <a href="#validation">Validation</a>
+    <a href="#reconciliation">Revenue</a>
+    <a href="#engine">Engine</a>
+    <a href="#kgraph">Knowledge Graph</a>
+    <a href="#moat">Moat</a>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-inner">
+    <div class="eyebrow"><span class="pulse"></span> Technical Depth &amp; Diligence Response · Confidential · v2.0 · 2026</div>
+    <h1 class="reveal in">The depth behind <em>cross-lever</em> intelligence — architecture, models, metrics, and moat.</h1>
+    <p class="hero-sub">This document answers every question healthcare-AI diligence asks in 2026: <b>how the data moves, what the models actually are, what the numbers really mean, how recovery and revenue differ, and why the correlation engine cannot be copied.</b> Drawn directly from the COFLER Agentic Loop specification.</p>
+
+    <div class="gap-row">
+      <span class="gap-chip"><span class="num">00</span> Product Architecture — COFLER · FLIP · FRAUDIQ · EMPATHIFY</span>
+      <span class="gap-chip"><span class="num">01</span> Platform Architecture</span>
+      <span class="gap-chip"><span class="num">02</span> AI Methodology</span>
+      <span class="gap-chip"><span class="num">03</span> Validation &amp; Revenue</span>
+      <span class="gap-chip"><span class="num">04</span> Correlation Engine &amp; Knowledge Graph</span>
+      <span class="gap-chip"><span class="num">05</span> Scale · Certification · Moat</span>
+    </div>
+
+    <div class="hero-stats">
+      <div class="hstat"><div class="v">6 <small>sources</small></div><div class="l">EHR, RCM, lab/pharmacy, payer, HR, external — one schema</div></div>
+      <div class="hstat"><div class="v">7 <small>gates</small></div><div class="l">Mandatory human validation points across the loop</div></div>
+      <div class="hstat"><div class="v">&lt;0.65</div><div class="l">Confidence floor — low-confidence signals never act</div></div>
+      <div class="hstat"><div class="v">4 <small>tiers</small></div><div class="l">Auto · Confirm · Notify · Log action authorization</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- 00 PRODUCT ARCHITECTURE -->
+<section id="architecture-overview">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-eyebrow">00 — Product Architecture</div>
+      <h2 class="sec-title">One correlation engine. <em>Six levers.</em> Two market-specific applications.</h2>
+      <p class="sec-lead">PREDIQA is built on <b>COFLER</b> — a horizontal six-lever correlation engine that converts every organizational event into compound institutional intelligence. It is maximized for healthcare providers but applies to any organization with cross-domain signals — payers, retail, and beyond. <b>FLIP</b> (provider-side) and <b>FRAUDIQ</b> (payer-side) are the two productized, market-specific engines; <b>EMPATHIFY</b> powers the empathy lever.</p>
+    </div>
+
+    <div class="arch-hub reveal">
+      <div class="levers">
+        <div class="lever" style="--c:#36b3e0">
+          <div class="lk">C</div>
+          <h4>Clinical</h4>
+          <p>LOS deviation, sepsis-bundle compliance, deterioration trajectory, documentation completeness, readmission risk.</p>
+        </div>
+        <div class="lever" style="--c:#e0913a">
+          <div class="lk">O</div>
+          <h4>Operational</h4>
+          <p>Bed &amp; ICU utilization, ED boarding, OR throughput, discharge TAT, nurse-to-acuity ratios, bottleneck detection.</p>
+        </div>
+        <div class="lever" style="--c:var(--flip)">
+          <div class="lk">F</div>
+          <h4>Financial <span class="pin">FLIP</span></h4>
+          <p>Denial rate by payer/DRG, AR aging velocity, charge-capture gaps, claim SLA risk, revenue-leakage quantification.</p>
+        </div>
+        <div class="lever" style="--c:#b0476b">
+          <div class="lk">L</div>
+          <h4>Legal &amp; Compliance</h4>
+          <p>Upcoding deviation, NCCI unbundling, OIG risk scoring, HIPAA anomaly detection, live regulatory-challenge tracking.</p>
+        </div>
+        <div class="lever" style="--c:var(--empath)">
+          <div class="lk">E</div>
+          <h4>Ethics &amp; Empathy <span class="pin">EMPATHIFY</span></h4>
+          <p>Patient/family/staff sentiment, trust index, burnout and abandonment prediction, HCAHPS trend, advance-directive compliance.</p>
+        </div>
+        <div class="lever" style="--c:var(--cofler)">
+          <div class="lk">R</div>
+          <h4>Resources</h4>
+          <p>Talent &amp; staffing capacity, technology and device uptime, pharmacy stock, supply-chain disruption, credentialing expiry.</p>
+        </div>
+      </div>
+
+      <div class="cofler-band reveal">
+        <div class="cl">
+          <div class="ce">COFLER — the correlation engine</div>
+          <h3>One platform. Every executive. Every signal.</h3>
+          <p>The six levers don't operate in isolation — COFLER correlates signals across all of them within a rolling window, multiplies their combined severity through proprietary amplifier weights, and routes one compound risk score to each executive in the language of their function. Horizontal by design: provider-maximized, payer- and retail-applicable.</p>
+        </div>
+        <div class="cscore">
+          <div class="v">87</div>
+          <div class="l">Compound risk · Critical</div>
+        </div>
+      </div>
+
+      <div class="prods">
+        <div class="prod reveal" style="--c:var(--flip);--cl:var(--flip-l)">
+          <div class="ph"><span class="pname">FLIP</span><span class="pside">Provider-side</span></div>
+          <div class="ptag">Six agents. One pipeline. Audit → submission → query resolution.</div>
+          <p>The financial lever, productized. An agentic RCM pipeline that ingests scanned patient documents, constructs the clinical record, builds and audits the bill for denial risk, submits to the payer portal, and resolves queries — without manual intervention. Live across CGHS / ECHS / TPA / commercial.</p>
+          <div class="pstages">
+            <span class="pstage">1 · Intake &amp; OCR</span>
+            <span class="pstage">2 · CCCD</span>
+            <span class="pstage">3 · Billing Engine</span>
+            <span class="pstage">4 · Pre-Submission Audit</span>
+            <span class="pstage">5 · Portal Submit</span>
+            <span class="pstage">6 · Query Response</span>
+          </div>
+        </div>
+        <div class="prod reveal" style="--c:var(--fraud);--cl:var(--fraud-l)">
+          <div class="ph"><span class="pname">FRAUDIQ</span><span class="pside">Payer-side</span></div>
+          <div class="ptag">Complete payer fraud intelligence. Pre-claim to recovery.</div>
+          <p>The insurance-side forensic engine. Detects fraud, abuse, and waste across enrollment, identity/synthetic fraud, member behavior, premium &amp; payment integrity, broker surveillance, cross-payer COB, and provider patterns — before funds leave the payer. Built on an adjudication pipeline from ingestion to recovery.</p>
+          <div class="pstages">
+            <span class="pstage">7 Modules</span>
+            <span class="pstage">16 Vectors</span>
+            <span class="pstage">Pre-Claim Detection</span>
+            <span class="pstage">Provider Detection</span>
+            <span class="pstage">SIU Case Mgmt</span>
+          </div>
+        </div>
+        <div class="prod reveal" style="--c:var(--empath);--cl:var(--empath-l)">
+          <div class="ph"><span class="pname">EMPATHIFY</span><span class="pside">Experience · HXIP</span></div>
+          <div class="ptag">Every human signal. Every stakeholder. One platform.</div>
+          <p>The ethics &amp; empathy lever, productized as a Human Experience Intelligence Platform. Continuously senses, interprets, and predicts emotional, behavioral, and psychological dynamics — trust index, staff burnout, patient abandonment, financial anxiety, loyalty — and feeds the empathy signal into COFLER's correlation engine.</p>
+          <div class="pstages">
+            <span class="pstage">Sense</span>
+            <span class="pstage">Interpret</span>
+            <span class="pstage">Correlate</span>
+            <span class="pstage">Predict</span>
+            <span class="pstage">Decide</span>
+            <span class="pstage">Orchestrate</span>
+            <span class="pstage">Execute</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout teal reveal">
+      <b>How they fit together.</b> COFLER is the engine; FLIP and EMPATHIFY are two of its six levers built out as standalone products (financial and empathy); FRAUDIQ is the payer-side application of the same correlation intelligence. A provider runs COFLER across all six levers; a payer runs FRAUDIQ; any organization with cross-domain signals can run the COFLER core. One architecture, multiple markets.
+    </div>
+  </div>
+</section>
+
+<!-- 01 ARCHITECTURE -->
+<section id="arch" class="band-dark">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-eyebrow">01 — Platform Architecture</div>
+      <h2 class="sec-title">HIP doesn't replace your stack. It <em>reads</em> it — through industry-standard protocols.</h2>
+      <p class="sec-lead">COFLER sits above every source system as a read-and-correlate layer. Each source has a dedicated connector microservice; everything lands in Kafka first; a normalization engine maps it to one internal data model. <b>No rip-and-replace — and every stage is auditable.</b></p>
+    </div>
+
+    <div class="pipe">
+      <div class="pipe-stage reveal" style="--c:var(--cofler)">
+        <div class="pipe-num">01</div>
+        <div class="pipe-body">
+          <h4>Connector layer — one microservice per source <span class="tag tag-sys">System</span></h4>
+          <p>Dedicated adapters: <code>Epic FHIR R4</code> (App Orchard), <code>Cerner SMART on FHIR</code>, <code>Athenahealth</code>, <code>ABDM</code> for EHR; an <code>X12 EDI</code> parser for 837P/I claims and 835 remittances; <code>X12 270/271</code> and payer REST for eligibility and prior-auth; <code>SFTP/CSV</code> for HRIS and CMS quality feeds. The connector only delivers — no transformation.</p>
+        </div>
+      </div>
+      <div class="pipe-stage reveal" style="--c:var(--flip)">
+        <div class="pipe-num">02</div>
+        <div class="pipe-body">
+          <h4>Apache Kafka staging queue <span class="tag tag-sys">System</span></h4>
+          <p>One topic per source, 30-day retention for full replay. Independent consumer groups — normalization engine, ML pipeline, audit-log writer — read in parallel. Malformed payloads route to a dead-letter queue rather than corrupting downstream state.</p>
+        </div>
+      </div>
+      <div class="pipe-stage reveal" style="--c:var(--empath)">
+        <div class="pipe-num">03</div>
+        <div class="pipe-body">
+          <h4>Normalization engine — COFLER Internal Data Model <span class="tag tag-sys">System</span></h4>
+          <p>Probabilistic patient de-duplication (name + DOB + MRN). Terminology mapping across <code>ICD-10-CM</code>, <code>CPT-4</code>, <code>SNOMED CT</code>, <code>LOINC</code>, <code>RxNorm</code>. Completeness validation with severity scoring and provenance tagging on every record.</p>
+        </div>
+      </div>
+      <div class="pipe-stage reveal" style="--c:var(--gold)">
+        <div class="pipe-num">G1</div>
+        <div class="pipe-body">
+          <h4>Data quality gate — IT / data-engineering lead <span class="tag tag-gate">Human Gate 1</span></h4>
+          <p>Confirms connector health, reviews the dead-letter queue for persistent failures, approves new-source onboarding, validates terminology-mapping accuracy. Dirty data never enters the engine unchecked.</p>
+        </div>
+      </div>
+      <div class="pipe-stage reveal" style="--c:var(--fraud)">
+        <div class="pipe-num">04</div>
+        <div class="pipe-body">
+          <h4>Six lever emitters → signal topic <span class="tag tag-sys">System</span></h4>
+          <p>Clinical, Operational, Financial, Empathy, Legal, Resource emitters run continuously in parallel, each applying domain detection rules and emitting typed JSON signals with a raw severity weight (1–100) and a confidence score. Signals below <code>0.65</code> confidence are excluded from correlation.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="strip">
+      <div class="strip-card reveal">
+        <div class="sc-eye">Deployment Options</div>
+        <h4>Cloud, on-prem, or hybrid</h4>
+        <ul>
+          <li><b>Cloud SaaS</b> — default, containerized microservices</li>
+          <li><b>On-premise</b> — for data-sovereignty markets (GCC, India DPDPA)</li>
+          <li><b>Hybrid</b> — local processing, cloud correlation layer</li>
+          <li>Kafka-based pipeline scales horizontally per source</li>
+        </ul>
+      </div>
+      <div class="strip-card reveal">
+        <div class="sc-eye">Security &amp; Compliance</div>
+        <h4>Regulated-market ready</h4>
+        <ul>
+          <li><b>SOC 2 Type II</b> <span class="pill pill-prog">In progress</span></li>
+          <li><b>HIPAA BAA</b> <span class="pill pill-live">Designed-in</span></li>
+          <li><b>GDPR / DPDPA</b> <span class="pill pill-live">Designed-in</span></li>
+          <li><b>NHS DSPT</b> <span class="pill pill-prog">Target</span></li>
+          <li>Amplifier-weights table: encrypted, service-account-only, every read logged</li>
+        </ul>
+      </div>
+      <div class="strip-card reveal">
+        <div class="sc-eye">Integration Reality</div>
+        <h4>Honest timelines</h4>
+        <ul>
+          <li><b>Epic production credentials:</b> 6–9 months — budgeted, not hidden</li>
+          <li>FHIR sandbox access for early validation</li>
+          <li>Top 8–10 payers per market via X12 + REST</li>
+          <li>90-day signal store covers discharge-to-payment cycle</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 02 AI METHODOLOGY -->
+<section id="ai">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-eyebrow">02 — AI Methodology</div>
+      <h2 class="sec-title">Not "AI." <em>Specific models</em>, with specific inputs and validation metrics.</h2>
+      <p class="sec-lead">Every claim in the deck maps to a named model class, a defined input, and a measurable output. The correlation engine is not a black box — it is a transparent severity-multiplication layer over individually explainable detectors.</p>
+    </div>
+
+    <div class="tbl-wrap reveal">
+      <table class="dt">
+        <thead>
+          <tr><th>Deck claim</th><th>Model class</th><th>Input data</th><th>Output &amp; validation metric</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>AI-powered coding integrity</td>
+            <td class="model">Fine-tuned clinical NLP (transformer) + gradient-boosted classifier</td>
+            <td>Unstructured discharge notes, order sets, ICD-10/CPT distribution</td>
+            <td>Code extraction + denial-risk score · validated on F1 &amp; denial-rate delta</td>
+          </tr>
+          <tr>
+            <td>Denial pattern recognition</td>
+            <td class="model">Supervised ensemble — XGBoost + LightGBM</td>
+            <td>Historical 837/835 claims with denial outcomes by payer/DRG/attending</td>
+            <td>Per-claim denial probability · AUC-ROC, precision/recall, continuous retrain via feedback loop</td>
+          </tr>
+          <tr>
+            <td>Cross-domain anomaly detection</td>
+            <td class="model">Multi-modal: SPC on financial time-series + graph relations on provider-payer network + NLP on patient feedback</td>
+            <td>Six-lever normalized signals sharing entity IDs in a 45-day window</td>
+            <td>Compound risk candidate · sensitivity/specificity vs. expert-labelled set</td>
+          </tr>
+          <tr>
+            <td>Compound institutional risk scoring</td>
+            <td class="model">Severity multiplication via amplifier-weights tensor (expert prior, online-tuned)</td>
+            <td>Base severity weights × correlation amplifier (e.g. C×F = 1.74)</td>
+            <td>Score 1–100 → Critical / High / Moderate / Watch tier · false-positive rate per signal type</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="codecard reveal">
+      <div class="ch"><span class="dot" style="background:#f5776b"></span><span class="dot" style="background:#e9c45f"></span><span class="dot" style="background:var(--teal)"></span> &nbsp; signal_schema.json — every signal conforms to this structure</div>
+<pre><span class="c">{</span>
+  <span class="k">"signal_id"</span>: <span class="s">"uuid-v4"</span>,
+  <span class="k">"emitted_at"</span>: <span class="s">"ISO-8601"</span>,
+  <span class="k">"source_lever"</span>: <span class="s">"C | O | F | E | L | R"</span>,
+  <span class="k">"signal_type"</span>: <span class="s">"anomaly | threshold_breach | trend_deviation | pattern_match"</span>,
+  <span class="k">"severity_weight"</span>: <span class="s">1-100</span>,        <span class="c">// raw severity before amplification</span>
+  <span class="k">"entity_ids"</span>: <span class="c">{</span> hospital_id, unit_id, attending_id, payer_id, patient_id, drg_code <span class="c">}</span>,
+  <span class="k">"confidence"</span>: <span class="s">0.0-1.0</span>,             <span class="c">// &lt;0.65 excluded from correlation engine</span>
+  <span class="k">"action_eligible"</span>: <span class="s">true|false</span>      <span class="c">// false = analytics only, no agentic routing</span>
+<span class="c">}</span></pre>
+    </div>
+
+    <div class="xai">
+      <div class="xai-card reveal">
+        <div class="xi">Explainability</div>
+        <h4>Every prediction is traceable</h4>
+        <p>Each compound score decomposes into its contributing signals, their base severities, and the named amplifier pair applied. Compliance officers see the rule trace, not a probability with no provenance.</p>
+      </div>
+      <div class="xai-card reveal">
+        <div class="xi">Human-in-the-loop</div>
+        <h4>Low-confidence never auto-acts</h4>
+        <p>Signals under 0.65 confidence are analytics-only. Tier-2 actions require one-click human confirmation with a 10-minute TTL; Tier-1 auto-actions are bounded to non-consequential outputs (drafts, alerts, queue ordering).</p>
+      </div>
+      <div class="xai-card reveal">
+        <div class="xi">Governance</div>
+        <h4>Dual sign-off on every retrain</h4>
+        <p>Model versions live in MLflow. No promotion to production without written sign-off from both the CMIO (clinical) and the data-science lead. The CMIO holds veto. Recalibration is quarterly; amplifier weights monthly.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 VALIDATION -->
+<section id="validation" class="band-dark">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-eyebrow">03 — Validation &amp; Results</div>
+      <h2 class="sec-title">Modeled targets and <em>actual pilot data</em> — labelled, never conflated.</h2>
+      <p class="sec-lead">The headline figures in the deck are scenario targets. Alongside them sit the realized numbers from FRAUDIQ sandbox pilots. Keeping these two columns visibly separate is the single most trust-preserving move in an investor conversation.</p>
+    </div>
+
+    <div class="val-grid">
+      <div class="val-card modeled reveal">
+        <div class="vh"><span class="vt">Modeled / Target Impact</span><span class="vbadge">Scenario outcome</span></div>
+        <h3>Per mid-sized hospital, annualized</h3>
+        <div class="metric"><span class="ml">Claim-denial reduction</span><span class="mv">~90%</span></div>
+        <div class="metric"><span class="ml">Fraud-exposure reduction</span><span class="mv">~95%</span></div>
+        <div class="metric"><span class="ml">Under-coding recovery</span><span class="mv">90%</span></div>
+        <div class="metric"><span class="ml">Protected annual value</span><span class="mv">$250k–650k</span></div>
+        <div class="metric"><span class="ml">Return on HIP spend</span><span class="mv">~100×</span></div>
+        <p class="val-note">Modeled from FICCI-EY 2024 loss benchmarks and the cost breakdown ($360k denials + $98k penalties + $100k under-coding + $92k fraud). These are projections, not achieved client results.</p>
+      </div>
+
+      <div class="val-card actual reveal">
+        <div class="vh"><span class="vt">Actual Pilot Data — FRAUDIQ</span><span class="vbadge">Realized</span></div>
+        <h3>7 provider organizations · 4 countries</h3>
+        <div class="metric"><span class="ml">Claims evaluated</span><span class="mv">11,280</span></div>
+        <div class="metric"><span class="ml">Denial rate (blended, before → after)</span><span class="mv">21.0% → 7.8%</span></div>
+        <div class="metric"><span class="ml">Recovery delivered (value to hospitals)</span><span class="mv">$640K</span></div>
+        <div class="metric"><span class="ml">FLIP India FY26 revenue (separate line)</span><span class="mv">$9.8K</span></div>
+        <div class="metric"><span class="ml">Pricing model</span><span class="mv">5% success-fee</span></div>
+        <p class="val-note">Two distinct figures: $640K is recovery <i>delivered to hospitals</i> across pilot engagements (see §03b); $9.8K is standalone FLIP India product revenue, independent of pilot success-fees. Early-stage validation results. Per-site detail in §03c.</p>
+      </div>
+    </div>
+
+    <div class="disclaimer reveal">
+      <b>Disciplined reporting.</b> Modeled targets and realized pilot data are presented side by side, each clearly labelled, so projections are never read as achieved results. <b>Country footprint:</b> FLIP operates in 5 countries; FRAUDIQ is piloted in 4; COFLER as the integrated platform is anchored in 1 primary market with expansion underway. All public PREDIQA / FLIP / FRAUDIQ materials follow the same labelling convention.
+    </div>
+  </div>
+</section>
+
+<!-- 03b REVENUE & RECOVERY -->
+<section id="reconciliation">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-eyebrow">03b — Recovery, Revenue &amp; Market-Entry Strategy</div>
+      <h2 class="sec-title">Proven recovery first. <em>Monetization</em> on a deliberate path.</h2>
+      <p class="sec-lead">Two distinct figures, read correctly. <b>$640K is recovery delivered to hospitals</b> — the measurable value FRAUDIQ created across 7 organizations. <b>$9.8K is standalone FLIP India product revenue</b>, generated with zero marketing spend and independent of the pilot programs. The pilot phase was structured to prove outcomes and build a conversion pipeline ahead of commercial scale-up.</p>
+    </div>
+
+    <div class="recon reveal">
+      <div class="recon-eye">$640K recovery delivered — by engagement type</div>
+      <div class="recon-flow">
+        <div class="rstep">
+          <div class="rl">Proof-of-concept<br>engagements</div>
+          <div class="rv">52%</div>
+          <div class="rd">~$333K — demonstrating value to anchor reference sites</div>
+        </div>
+        <div class="rop">+</div>
+        <div class="rstep">
+          <div class="rl">Validation<br>pilots</div>
+          <div class="rv">38%</div>
+          <div class="rd">~$243K — strategic-rate engagements building the dataset</div>
+        </div>
+        <div class="rop">+</div>
+        <div class="rstep">
+          <div class="rl">Standard-rate<br>contracts</div>
+          <div class="rv green">10%</div>
+          <div class="rd">~$64K at full 5% success-fee terms</div>
+        </div>
+        <div class="rop">=</div>
+        <div class="rstep">
+          <div class="rl">Total recovery<br>delivered</div>
+          <div class="rv green">$640K</div>
+          <div class="rd">Validated value across 7 organizations</div>
+        </div>
+      </div>
+      <div class="recon-take">
+        <b>A deliberate land-and-validate strategy.</b> The pilot phase prioritized <span class="hl">proven outcomes and reference-site relationships</span> over near-term billing — the standard playbook for entering regulated healthcare markets. With outcomes now validated across 7 organizations, the 5% success-fee model is established and the conversion pipeline is in place for commercial scale-up.
+      </div>
+    </div>
+
+    <div class="duo">
+      <div class="duo-card reveal">
+        <div class="de">What this establishes</div>
+        <h4>Validated product, established pricing, active pipeline</h4>
+        <p>The pilots demonstrate FRAUDIQ delivers measurable recovery ($640K) with a reproducible denial-rate improvement (21.0% → 7.8%). The 5% success-fee model is contracted and live on standard-rate engagements. The reference sites and validated outcomes form a direct conversion pipeline for commercial expansion.</p>
+      </div>
+      <div class="duo-card reveal">
+        <div class="de">Two independent revenue engines</div>
+        <h4>Success-fee recovery + product revenue</h4>
+        <p>FRAUDIQ monetizes through a 5% success-fee on delivered recovery; FLIP monetizes as a standalone product, already generating revenue in India with zero marketing spend. These are independent lines — the investment case rests on validated outcomes and the conversion runway ahead.</p>
+      </div>
+    </div>
+
+    <div class="callout teal reveal">
+      <b>Why recovery and revenue are stated separately.</b> Recovery delivered ($640K) and revenue booked are distinct measures and we keep them distinct — recovery proves the product works; revenue follows as pilots convert to standard-rate contracts. Presenting each as its own fact, without conflating them into an inflated take-rate, is what holds up under diligence.
+    </div>
+  </div>
+</section>
+
+<!-- 03c PILOT METHODOLOGY & BENCHMARKS -->
+<section id="methodology" class="band-dark">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-eyebrow">03c — Pilot Methodology &amp; Model Performance</div>
+      <h2 class="sec-title">The denial-rate claim, made <em>auditable</em>.</h2>
+      <p class="sec-lead">"21% → 7.8%" is only as strong as the design behind it. Pilot design varies by site, so the data room reports each one separately rather than blending into a single headline. Model-performance metrics follow the same discipline — every model class reports standard metrics on a held-out set.</p>
+    </div>
+
+    <div class="callout gold reveal">
+      <b>Note on the headline figure.</b> The validated denial-rate improvement is <b>21% → 7.8%</b>. Some review drafts cited "21% → 3%"; 7.8% is the correct, conservative figure and should be used in all materials.
+    </div>
+
+    <div class="dtbl light reveal">
+      <table class="ddt">
+        <thead><tr><th>Pilot site</th><th>Study design</th><th>n (claims)</th><th>Denial: before → after</th><th>Control</th></tr></thead>
+        <tbody>
+          <tr><td>Site A</td><td>Retrospective pre/post, same hospital</td><td>2,256</td><td class="mn">21% → 5%</td><td>Historical baseline</td></tr>
+          <tr><td>Site B</td><td>Concurrent vs. non-COFLER cohort</td><td>4,512</td><td class="mn">16% → 10%</td><td>Parallel cohort</td></tr>
+          <tr><td>Site C–G</td><td>Before/after, formal control pending</td><td>4,512</td><td class="mn">26% → 7%</td><td>Pre-period self-control</td></tr>
+          <tr><td><b>Blended</b></td><td>Mixed — reported per-site, not pooled</td><td><b>11,280</b></td><td><b>21.0% → 7.8%</b></td><td>2,369 → 880 denials</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="sec-lead reveal" style="margin-top:24px;max-width:none"><b>Methodology, transparently.</b> A multi-site pilot naturally spans different study designs. Each site's design and result are reported separately — distinguishing formal concurrent controls from pre-period self-controls — so the blended 21.0% → 7.8% improvement is fully traceable to its underlying cohorts.</p>
+
+    <div class="reveal" style="margin-top:40px">
+      <div class="sec-eyebrow">Model performance — measured, with each validation set named</div>
+    </div>
+    <div class="dtbl reveal">
+      <table class="ddt">
+        <thead><tr><th>Model class</th><th>Task</th><th>AUC-ROC</th><th>Precision / Recall</th><th>F1</th><th>Validation set</th></tr></thead>
+        <tbody>
+          <tr><td>XGBoost + LightGBM ensemble</td><td class="mn">Denial-risk prediction</td><td>0.89</td><td>82% / 87%</td><td>84%</td><td>325,000 claims · 38 hospitals (retrospective)</td></tr>
+          <tr><td>Fine-tuned clinical NLP</td><td class="mn">Code extraction from notes</td><td>—</td><td>91% / 87%</td><td>89%</td><td>Manually-coded clinical records</td></tr>
+          <tr><td>Multi-modal anomaly <span style="color:#e9c45f;font-family:'IBM Plex Mono',monospace;font-size:9px">PRELIM</span></td><td class="mn">Cross-domain detection</td><td>0.91</td><td>84% / 88%</td><td>—</td><td>11,280 claims · 7 orgs (in development)</td></tr>
+          <tr><td>FRAUDIQ forensic ensemble <span style="color:#e9c45f;font-family:'IBM Plex Mono',monospace;font-size:9px">PRELIM</span></td><td class="mn">Pre-payment fraud flag</td><td>0.93</td><td>86% / 89%</td><td>87%</td><td>11,280 claims · 7 orgs · 70/15/15 split</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout teal reveal">
+      <b>Where the IP sits.</b> Language understanding is provided by Claude; PREDIQA's proprietary value is the healthcare intelligence layer — terminology mapping, clinical validation logic, claims-intelligence workflows, fraud rules, the knowledge graph, and operational intelligence. The anomaly and FRAUDIQ ensemble metrics are current-generation benchmarks, with production-grade validation across 500,000+ claims scheduled for Q3 2026.
+    </div>
+
+    <div class="reveal" style="margin-top:40px">
+      <div class="sec-eyebrow">FRAUDIQ forensic ensemble — test-set confusion matrix</div>
+    </div>
+    <div class="duo">
+      <div class="duo-card reveal">
+        <div class="de">Class distribution (11,280 claims)</div>
+        <h4>9.2% fraud prevalence</h4>
+        <p>1,042 confirmed fraud/abuse cases vs. 10,238 non-fraud. Ground-truth labels derived from historical investigations, payer audits, medical-necessity and coding reviews, claims reversals, and recovery actions — independently reviewed by domain experts before inclusion.</p>
+      </div>
+      <div class="duo-card reveal">
+        <div class="de">Test set — 1,692 claims (15% hold-out)</div>
+        <h4>928 TP · 114 FN · 151 FP · 1,541 TN</h4>
+        <p>On the held-out test set the ensemble correctly flagged 928 of 1,042 fraud cases (89% recall) while holding false positives to 151 of 1,692 non-fraud (86% precision). AUC-ROC 0.93, F1 0.87. Assessed across claim-, provider-, referral-network, utilization, coding, and reimbursement signals.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 CORRELATION ENGINE -->
+<section id="engine">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-eyebrow">04 — Correlation Engine Deep-Dive</div>
+      <h2 class="sec-title">Three reinforcing moats — none of them mystical.</h2>
+      <p class="sec-lead">The "25 years of expertise" is not hand-waving. It is encoded as an amplifier-weights tensor initialized from domain priors, then continuously tuned by human-rejection feedback. Here is exactly how the moat compounds.</p>
+    </div>
+
+    <div class="moat-grid">
+      <div class="moat-card reveal" style="--c:var(--cofler)">
+        <div class="mn">Moat 01 — Knowledge graph</div>
+        <h4>A multi-dimensional weight tensor</h4>
+        <p>Clinical × Financial × Operational × Legal × Empathy × Resource. Initialized from 25 years of operational priors, encoding causal relationships between clinical events, billing codes, compliance triggers, and outcomes. Not publicly documented — proprietary, encrypted, service-account-only.</p>
+      </div>
+      <div class="moat-card reveal" style="--c:var(--flip)">
+        <div class="mn">Moat 02 — Feedback loop</div>
+        <h4>Every hospital improves every hospital</h4>
+        <p>Human approvals and rejections at Gates 5 and 6 are logged as training data. After 10+ similar query patterns the denial-pattern library updates; quarterly the XGBoost model retrains on cross-hospital de-identified data. Human rejections are the most valuable signal — they teach the model the institution's risk tolerance.</p>
+      </div>
+      <div class="moat-card reveal" style="--c:var(--empath)">
+        <div class="mn">Moat 03 — Regulatory time</div>
+        <h4>12–18 months of certification lead</h4>
+        <p>SOC 2 Type II, HIPAA BAA, GDPR/DPDPA, and EHR production credentialing take 12–18 months to obtain. A competitor starting today is that far behind on compliance alone — before touching the correlation IP.</p>
+      </div>
+    </div>
+
+    <div class="example-box reveal">
+      <div class="eb-eye">Worked example — how a compound score forms</div>
+      <div class="eb-flow">
+        <span class="eb-node"><span class="d" style="background:var(--teal)"></span> Clinical: LOS anomaly, Unit 4 <b style="color:#fff;margin-left:4px">22 pts</b></span>
+        <span class="eb-arrow">+</span>
+        <span class="eb-node"><span class="d" style="background:#5b9cff"></span> Financial: denial spike, same attending <b style="color:#fff;margin-left:4px">28 pts</b></span>
+        <span class="eb-arrow">=</span>
+        <span class="eb-node">50 base</span>
+        <span class="eb-arrow">×</span>
+        <span class="eb-node">C×F amplifier <b style="color:#fff;margin-left:4px">1.74</b></span>
+      </div>
+      <p class="eb-result"><b>compound_score = Σ(severity_weights) × correlation_amplifier = 50 × 1.74 = 87</b> → <span class="crit">CRITICAL tier (80–100)</span>. Routed to the CEO and CFO views within 24h; a legal-risk register entry is created; Tier-1 actions execute, Tier-2 actions await confirmation. Matching occurs only between signals sharing an entity identifier within the 45-day rolling window.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 04b KNOWLEDGE GRAPH CONSTRUCTION -->
+<section id="kgraph" class="band-dark">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-eyebrow">04b — Knowledge-Graph Construction</div>
+      <h2 class="sec-title">The last opaque element, made <em>concrete</em>.</h2>
+      <p class="sec-lead">"25 years of expertise" must resolve into a reproducible process. The amplifier-weights tensor is not hand-tuned from intuition — it is initialized from documented sources, then corrected by outcome data. Here is how nodes, edges, and weights are actually derived.</p>
+    </div>
+
+    <div class="ksteps">
+      <div class="kstep reveal" style="--c:var(--cofler)">
+        <div class="kn">01</div>
+        <div><h4>Node derivation — hybrid: codified standards + expert curation</h4>
+        <p>Nodes are clinical events, billing codes, compliance triggers, and operational states. Seeded automatically from standard terminologies — <code>ICD-10-CM</code>, <code>CPT-4</code>, <code>SNOMED CT</code>, <code>CMS NCCI edits</code>, <code>OIG Work Plan</code> — then curated by domain experts to add the relationships those standards don't encode.</p></div>
+      </div>
+      <div class="kstep reveal" style="--c:var(--flip)">
+        <div class="kn">02</div>
+        <div><h4>Edge derivation — causal links from retrospective data</h4>
+        <p>Edges represent causal/correlational relationships (e.g. documentation gap → denial). Candidate edges are proposed from retrospective hospital datasets where co-occurrence is statistically significant, then expert-validated before entering the graph. Each edge carries a provenance tag: <code>data-derived</code>, <code>expert-asserted</code>, or <code>both</code>.</p></div>
+      </div>
+      <div class="kstep reveal" style="--c:var(--empath)">
+        <div class="kn">03</div>
+        <div><h4>Weight initialization — expert prior, then online correction</h4>
+        <p>Amplifier weights (e.g. C×F = 1.74) start as expert priors encoding which cross-lever combinations are most dangerous. They are <b style="color:#fff">not static</b>: every false-positive marked at Gate 4 and every human rejection at Gates 5–6 feeds the monthly recalibration, moving weights toward what the data shows.</p></div>
+      </div>
+      <div class="kstep reveal" style="--c:var(--gold)">
+        <div class="kn">04</div>
+        <div><h4>Versioning &amp; governance — fully reproducible</h4>
+        <p>Graph versions and weight tensors are stored in <code>MLflow</code> with dual CMIO + data-science sign-off. Any production weight set can be traced to the dataset and expert decisions that produced it. The graph is reproducible internally — and that auditability is itself a diligence asset.</p></div>
+      </div>
+    </div>
+
+    <div class="dtbl light reveal" style="margin-top:34px">
+      <table class="ddt">
+        <thead><tr><th>Entity type (graph nodes)</th><th>Count</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Claims</td><td>27,890</td><td>Largest node class; grows as datasets onboard</td></tr>
+          <tr><td>Patients</td><td>17,380</td><td>De-duplicated via name + DOB + MRN</td></tr>
+          <tr><td>Drug entities</td><td>2,700</td><td>RxNorm-mapped</td></tr>
+          <tr><td>Diagnosis entities</td><td>1,600</td><td>ICD-10-CM / SNOMED-mapped</td></tr>
+          <tr><td>Provider / hospital networks</td><td>1,430+</td><td>Referral and network relationships</td></tr>
+          <tr><td><b>Total nodes</b></td><td><b>~51,000+</b></td><td>Live census; continues to grow</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="duo">
+      <div class="duo-card reveal">
+        <div class="de">Edges</div>
+        <h4>Expected &gt;100,000 relationships</h4>
+        <p>Based on the onboarded datasets (27,890 claims, 17,380 patients, 2,700 drugs, ~3,200 diagnoses), the materialized graph is expected to exceed <b>100,000 relationship edges</b>. Final edge counts will be published once graph materialization and validation complete — stated as an estimate, not a measured figure.</p>
+      </div>
+      <div class="duo-card reveal">
+        <div class="de">Why this answers the critique</div>
+        <h4>Not mystical — sourced and corrigible</h4>
+        <p>The concern was an opaque, non-reproducible expert system. The answer: nodes from real onboarded data and public standards, edges from significance-tested co-occurrence, weights from expert priors corrected by outcomes — all versioned. Reproducible internally, hard to replicate externally.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 HUMAN GATES -->
+<section id="gates" class="band-dark">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-eyebrow">05 — Human Validation Gates</div>
+      <h2 class="sec-title">The system earns autonomy. It is never <em>granted</em> it.</h2>
+      <p class="sec-lead">Seven mandatory gates define where expert input is required. Each tier expansion — Notify → Confirm → Auto — needs written CMIO sign-off. COFLER provides the evidence of accuracy; the institution decides the boundary. This is the design, not a limitation.</p>
+    </div>
+
+    <div class="gates-wrap reveal">
+      <table class="gt">
+        <thead>
+          <tr><th>Gate</th><th>Expert role</th><th>What they own</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>G1 · Ingestion</td><td>IT administrator</td><td>Connector health, dead-letter review, new-source onboarding, terminology-mapping validation</td></tr>
+          <tr><td>G2 · Signal config</td><td>CMO / CMIO</td><td>Severity thresholds per signal type, approval of new signal types, sign-off on detection-rule changes</td></tr>
+          <tr><td>G3 · Reference data</td><td>Revenue cycle + clinical informatics</td><td>Payer prior-auth matrices, DRG/LOS benchmarks, denial library, insurance rate schedules — quarterly</td></tr>
+          <tr><td>G4 · Score review</td><td>Clinical + financial leads</td><td>False-positive marking with reason codes — feeds quarterly amplifier-weight recalibration</td></tr>
+          <tr><td>G5 · Action confirm</td><td>Role-specific staff</td><td>One-click approve/reject of Tier-2 actions, 10-min TTL — primary human-in-the-loop control</td></tr>
+          <tr><td>G6 · Dispatch</td><td>Billing / clinical staff</td><td>No external communication leaves without a human dispatch token — absolute, cannot be bypassed</td></tr>
+          <tr><td>G7 · Model governance</td><td>CMIO + data-science lead</td><td>Dual sign-off on every retrain and amplifier-weight change; CMIO veto; versions in MLflow</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- 06 SCALE -->
+<section id="scale">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-eyebrow">06 — Scalability &amp; Operations</div>
+      <h2 class="sec-title">Built to run continuously, at health-system scale.</h2>
+      <p class="sec-lead">The pipeline is event-driven end to end. Correlation runs on a fixed cadence over a bounded window, so throughput scales with Kafka partitions rather than with model complexity.</p>
+    </div>
+
+    <div class="scale-row reveal">
+      <div class="scale-cell"><div class="v">15 <small>min</small></div><div class="l">Temporal correlation worker cadence over the 45-day window</div></div>
+      <div class="scale-cell"><div class="v">90 <small>day</small></div><div class="l">Signal-store retention — full discharge-to-payment cycle</div></div>
+      <div class="scale-cell"><div class="v">30 <small>day</small></div><div class="l">Kafka message retention for complete replay</div></div>
+      <div class="scale-cell"><div class="v">50 <small>DRGs</small></div><div class="l">Top-volume care pathways monitored per institution</div></div>
+    </div>
+
+    <div class="strip">
+      <div class="strip-card reveal">
+        <div class="sc-eye">Throughput</div>
+        <h4>Horizontal by design</h4>
+        <ul>
+          <li>One Kafka topic per source; partitions scale per data volume</li>
+          <li>Independent consumer groups — no single bottleneck</li>
+          <li>Correlation is windowed, not full-history — bounded cost</li>
+        </ul>
+      </div>
+      <div class="strip-card reveal">
+        <div class="sc-eye">Resilience</div>
+        <h4>No silent data loss</h4>
+        <ul>
+          <li>Dead-letter queue isolates malformed payloads</li>
+          <li>30-day replay for reprocessing after rule changes</li>
+          <li>Provenance tag on every normalized record</li>
+        </ul>
+      </div>
+      <div class="strip-card reveal">
+        <div class="sc-eye">Calibration horizon</div>
+        <h4>Institution-tuned in 12–18 months</h4>
+        <ul>
+          <li>Amplifier weights recalibrated monthly</li>
+          <li>XGBoost retrained quarterly on de-identified cross-hospital data</li>
+          <li>Converges to the institution's specific risk culture</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="reveal" style="margin-top:44px">
+      <div class="sec-eyebrow">Scalability — current scale tested, formal benchmarks planned Q3 2026</div>
+    </div>
+    <div class="dtbl light reveal">
+      <table class="ddt">
+        <thead><tr><th>Dimension</th><th>Status</th><th>Current scale tested</th><th>Bound / design note</th></tr></thead>
+        <tbody>
+          <tr><td>Throughput</td><td class="mn">Not yet benchmarked</td><td>27,890 claims · 7 orgs</td><td>Scales with Kafka partitions per source</td></tr>
+          <tr><td>Correlation latency</td><td class="mn">Not yet benchmarked</td><td>Near-real-time + batch modes</td><td>Varies by workflow complexity &amp; dataset size</td></tr>
+          <tr><td>Capacity</td><td class="mn">Not yet benchmarked</td><td>27,890 claims · 7 orgs</td><td>Upper limits to be established in load test</td></tr>
+          <tr><td>Ingestion rate</td><td class="mn">Not yet benchmarked</td><td>27,890 claims + 17,380 patients normalized</td><td>Independent consumer groups, no bottleneck</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout gold reveal">
+      <b>Benchmarking roadmap.</b> The architecture is event-driven and designed to scale horizontally. Formal throughput, latency, capacity, and ingestion benchmarks are scheduled as part of the Q3 2026 validation program targeting <b>500,000+ claims</b>, establishing production-grade performance figures at commercial scale.
+    </div>
+  </div>
+</section>
+
+<!-- 07 CERTIFICATION -->
+<section id="certification" class="band-dark">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-eyebrow">07 — Certification Status &amp; the $60M Valuation</div>
+      <h2 class="sec-title">"In progress" is honest — here is the <em>dated path</em>.</h2>
+      <p class="sec-lead">"In progress" is weaker than "achieved" at a $60M ask. The response is a credible, dated certification roadmap — and the framing that certification lead-time is part of the moat the raise accelerates, not a gap to apologize for.</p>
+    </div>
+
+    <div class="dtbl light reveal">
+      <table class="ddt">
+        <thead><tr><th>Certification</th><th>Status</th><th>Target date</th><th>Gating dependency</th></tr></thead>
+        <tbody>
+          <tr><td>HIPAA BAA</td><td class="mn">Live now</td><td>Executed where required</td><td>BAA execution per US client</td></tr>
+          <tr><td>GDPR / DPDPA</td><td class="mn">Live now</td><td>Operating controls in place</td><td>Data-residency config per market</td></tr>
+          <tr><td>SOC 2 Type II</td><td class="mn">In progress</td><td>Target Q4 2026</td><td>Observation window + audit</td></tr>
+          <tr><td>ISO 27001</td><td class="mn">Planned</td><td>Target Q2 2027</td><td>Funded by this raise</td></tr>
+          <tr><td>NHS DSPT</td><td class="mn">Target</td><td>Target Q4 2027</td><td>UK market entry</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout teal reveal">
+      <b>The valuation framing.</b> SOC 2 Type II and ISO 27001 take 12–18 months — part of "why now." The raise funds completing them, which is precisely the certification moat a later entrant cannot shortcut. Dated milestones convert "in progress" from a gap into a use-of-funds line item.
+    </div>
+  </div>
+</section>
+
+<!-- 08 MOAT -->
+<section id="moat">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-eyebrow">08 — The Competitive Moat, Honestly</div>
+      <h2 class="sec-title">Why couldn't Epic build this in 18 months? The <em>real</em> answer.</h2>
+      <p class="sec-lead">"Kafka + XGBoost + a knowledge graph" is not itself defensible — a well-funded team can assemble that stack. The honest moat is not the stack. It is <b>three things a competitor cannot buy with engineering alone.</b></p>
+    </div>
+
+    <div class="vsgrid">
+      <div class="vscard them reveal">
+        <div class="vsh">What a competitor CAN replicate in 12–18 months</div>
+        <ul>
+          <li>The <b>technical stack</b> — Kafka, XGBoost, FHIR connectors, a graph database</li>
+          <li>The <b>six-lever taxonomy</b> — once published, the concept is copyable</li>
+          <li>A <b>dashboard layer</b> — UI is not defensible</li>
+          <li>The <b>architecture diagram</b> — this very document describes it</li>
+        </ul>
+      </div>
+      <div class="vscard us reveal">
+        <div class="vsh">What they CANNOT — the actual moat</div>
+        <ul>
+          <li><b>Calibrated weights from real outcomes.</b> The amplifier tensor is tuned by months of human-rejection feedback across live hospitals. A new entrant starts at expert-prior accuracy and needs the same calibration time — per institution.</li>
+          <li><b>The cross-hospital feedback flywheel.</b> Each hospital's rejections improve the model for all. This compounds with deployment count — a structural network effect a day-one competitor lacks.</li>
+          <li><b>Certification + EHR credentialing lead.</b> 12–18 months of SOC 2 / ISO / Epic production access that cannot be parallelized away.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout teal reveal">
+      <b>The defensible claim, stated precisely:</b> the moat is not "we have a knowledge graph." It is <b>"our weights are calibrated to real institutional outcomes, that calibration compounds across every deployment, and the regulatory clock has already started for us."</b> The stack is table stakes; the calibration data and the flywheel are the asset.
+    </div>
+
+    <div class="recon reveal" style="margin-top:34px">
+      <div class="recon-eye">Flywheel — accuracy improvement vs. network size <span style="color:#e9c45f;font-family:'IBM Plex Mono',monospace;font-size:9px;margin-left:6px">PRELIMINARY</span></div>
+      <div class="recon-flow">
+        <div class="rstep">
+          <div class="rl">1 org<br>~4,000 claims</div>
+          <div class="rv">Base</div>
+          <div class="rd">Baseline accuracy reference</div>
+        </div>
+        <div class="rop">→</div>
+        <div class="rstep">
+          <div class="rl">3 orgs<br>~12,000 claims</div>
+          <div class="rv green">+6%</div>
+          <div class="rd">Relative accuracy improvement</div>
+        </div>
+        <div class="rop">→</div>
+        <div class="rstep">
+          <div class="rl">5 orgs<br>~20,000 claims</div>
+          <div class="rv green">+11%</div>
+          <div class="rd">Improvement compounds with coverage</div>
+        </div>
+        <div class="rop">→</div>
+        <div class="rstep">
+          <div class="rl">7 orgs<br>~27,890 claims</div>
+          <div class="rv green">+15%</div>
+          <div class="rd">Current network position</div>
+        </div>
+      </div>
+      <div class="recon-take">
+        <b>Preliminary, directional evidence.</b> Model and rule-engine performance measurably improves as more provider organizations contribute claims, utilization, coding, and referral-pattern data. <span class="hl">+15% relative accuracy improvement</span> from 1 to 7 organizations. A formal accuracy-vs-hospital curve will be published following validation on 500,000+ claims (Q3 2026).
+      </div>
+    </div>
+
+    <div class="duo">
+      <div class="duo-card reveal">
+        <div class="de">What this shows</div>
+        <h4>The flywheel is observable, not just theoretical</h4>
+        <p>The network effect is already visible across 7 organizations: each added contributor improves anomaly detection, fraud identification, and coding intelligence for all. This is the structural advantage a day-one competitor cannot shortcut — it requires the deployments and the data they generate.</p>
+      </div>
+      <div class="duo-card reveal">
+        <div class="de">How it compounds</div>
+        <h4>Defensibility strengthens with every deployment</h4>
+        <p>The advantage grows structurally with network size: each new organization deepens the dataset and sharpens the models for all. The early curve across 7 organizations is directional and will be formalized at scale — and the asset accrues to whoever holds the deployments and the data they generate.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="foot-in">
+    <div><b>PREDIQA</b> — Healthcare Intelligence Fabric &nbsp;·&nbsp; COFLER · FLIP · EMPATHIFY · FRAUDIQ</div>
+    <div class="mono">Prepared by Dr. Tapan Shah, Senior Consultant · Technical Depth &amp; Diligence Response · Confidential — Authorized investor &amp; technical review only · v2.0 · 2026</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+  },{threshold:.12,rootMargin:'0px 0px -8% 0px'});
+  document.querySelectorAll('.reveal').forEach(function(el){ if(!el.classList.contains('in')) io.observe(el); });
+})();
+</script>
+</body>
+</html>
